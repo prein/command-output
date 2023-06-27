@@ -30,7 +30,7 @@ class RecordStream extends Transform {
   }
 }
 
-function run (command, shell) {
+function run (command, shell, outputTimeout) {
   return new Promise((resolve, reject) => {
     const outRec = new RecordStream()
     const errRec = new RecordStream()
@@ -44,9 +44,21 @@ function run (command, shell) {
     // Execute the command
     const cmd = spawn(shell, [...args, command])
 
+    let timer
+
     // Record stream output and pass it through main process
     cmd.stdout.pipe(outRec).pipe(process.stdout)
     cmd.stderr.pipe(errRec).pipe(process.stderr)
+
+    // Track output activity and set the timeout
+    cmd.stdout.on('data', () => {
+      // Reset the timer on each data event
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        reject(new Error(`Command timed out due to no output for ${outputTimeout} milliseconds`))
+        cmd.kill()
+      }, outputTimeout)
+    })
 
     cmd.on('error', error => reject(error))
 
@@ -63,5 +75,5 @@ function run (command, shell) {
   })
 }
 
-run(core.getInput('run'), core.getInput('shell'))
+run(core.getInput('run'), core.getInput('shell'),core.getInput('no_output_timeout'))
   .catch(error => core.setFailed(error.message))

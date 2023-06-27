@@ -8,6 +8,9 @@ inputs:
     description: Shell used to run command
     required: false
     default: bash
+  no_output_timeout:
+    default: 5000
+    required: false
 outputs:
   stdout:
     description: Output of the command

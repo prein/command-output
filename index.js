@@ -51,7 +51,7 @@ function run (command, shell, outputTimeout) {
     cmd.stderr.pipe(errRec).pipe(process.stderr)
 
     // Track output activity and set the timeout
-    cmd.stdout.on('data', () => {
+    outRec.on('data', () => {
       // Reset the timer on each data event
       clearTimeout(timer)
       timer = setTimeout(() => {

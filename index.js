@@ -55,6 +55,7 @@ function run (command, shell, outputTimeout) {
       // Reset the timer on each data event
       clearTimeout(timer)
       timer = setTimeout(() => {
+        console.log('Killing the command process...')
         reject(new Error(`Command timed out due to no output for ${outputTimeout} milliseconds`))
         cmd.kill()
       }, outputTimeout)

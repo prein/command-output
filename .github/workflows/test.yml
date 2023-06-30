@@ -52,3 +52,17 @@ jobs:
       - name: Should fail on unknown shell
         if: ${{ steps.unknown-shell.outcome != 'failure' }}
         run: exit 1
+
+      - name: Test timeout
+        uses: ./
+        continue-on-error: true
+        id: timeout
+        with:
+          run: |
+            echo "sleeping for 30s"
+            sleep 30
+          shell: bash
+          no_output_timeout: 1
+      - name: Should fail
+        if: ${{ steps.timeout.outcome != 'failure' }}
+        run: exit 1

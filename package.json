@@ -1,6 +1,6 @@
 {
   "name": "command-output",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Run a command and store its output",
   "private": true,
   "main": "index.js",
@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/mathiasvr/command-output/issues"
   },
-  "homepage": "https://github.com/mathiasvr/command-output#readme"
+  "homepage": "https://github.com/mathiasvr/command-output#readme",
+  "dependencies": {
+    "@actions/github": "^5.1.1"
+  }
 }

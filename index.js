@@ -1,7 +1,7 @@
 const { spawn } = require('child_process')
 const { Transform } = require('stream')
 const { Buffer } = require('buffer')
-const process = require('process')
+// const process = require('process')
 
 const core = require('@actions/core')
 
@@ -51,14 +51,16 @@ function run (command, shell, outputTimeout) {
     cmd.stderr.pipe(errRec).pipe(process.stderr)
 
     // Track output activity and set the timeout
-    outRec.on('data', () => {
-      // Reset the timer on each data event
+    // cmd.stdout.on('data', () => {
+    outRec.on('data', (data) => {
+      console.log('Received data')
+      //  Reset the timer on each data event
       clearTimeout(timer)
       timer = setTimeout(() => {
         console.log('Killing the command process but not really...')
-        // reject(new Error(`Command timed out due to no output for ${outputTimeout} milliseconds`))
-        // cmd.kill()
-      }, outputTimeout)
+        reject(new Error(`Command timed out due to no output for ${outputTimeout} seconds`))
+        cmd.kill()
+      }, outputTimeout * 1000)
     })
 
     cmd.on('error', error => reject(error))
@@ -76,5 +78,5 @@ function run (command, shell, outputTimeout) {
   })
 }
 
-run(core.getInput('run'), core.getInput('shell'),core.getInput('no_output_timeout'))
+run(core.getInput('run'), core.getInput('shell'), core.getInput('no_output_timeout'))
   .catch(error => core.setFailed(error.message))

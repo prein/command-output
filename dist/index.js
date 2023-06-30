@@ -2776,6 +2776,14 @@ module.exports = require("path");
 
 /***/ }),
 
+/***/ 282:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("process");
+
+/***/ }),
+
 /***/ 781:
 /***/ ((module) => {
 
@@ -2844,7 +2852,7 @@ var __webpack_exports__ = {};
 const { spawn } = __nccwpck_require__(81)
 const { Transform } = __nccwpck_require__(781)
 const { Buffer } = __nccwpck_require__(300)
-// const process = require('process')
+const process = __nccwpck_require__(282)
 
 const core = __nccwpck_require__(875)
 
@@ -2894,13 +2902,11 @@ function run (command, shell, outputTimeout) {
     cmd.stderr.pipe(errRec).pipe(process.stderr)
 
     // Track output activity and set the timeout
-    // cmd.stdout.on('data', () => {
     outRec.on('data', (data) => {
-      console.log('Received data')
       //  Reset the timer on each data event
       clearTimeout(timer)
       timer = setTimeout(() => {
-        console.log('Killing the command process but not really...')
+        console.log('Killing the command process...')
         reject(new Error(`Command timed out due to no output for ${outputTimeout} seconds`))
         cmd.kill()
       }, outputTimeout * 1000)

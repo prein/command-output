@@ -52,8 +52,7 @@ function run (command, shell, outputTimeout) {
 
     // Track output activity and set the timeout
     outRec.on('data', (data) => {
-      //  Reset the timer on each data event
-      clearTimeout(timer)
+      clearTimeout(timer) // Reset the timer on each data event
       timer = setTimeout(() => {
         console.log('Killing the command process...')
         reject(new Error(`Command timed out due to no output for ${outputTimeout} seconds`))
@@ -61,9 +60,14 @@ function run (command, shell, outputTimeout) {
       }, outputTimeout * 1000)
     })
 
-    cmd.on('error', error => reject(error))
+    cmd.on('error', (error) => {
+      clearTimeout(timer) // Clear the timeout when an error occurs
+      reject(error)
+    })
 
-    cmd.on('close', code => {
+    cmd.on('exit', code => {
+      clearTimeout(timer) // Clear the timeout when the process exits
+
       core.setOutput('stdout', outRec.output.toString())
       core.setOutput('stderr', errRec.output.toString())
 

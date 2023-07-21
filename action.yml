@@ -10,7 +10,7 @@ inputs:
     default: bash
   no_output_timeout:
     description: No output timeout (seconds)
-    default: 5
+    default: 900  # 15 min
     required: false
 outputs:
   stdout:
